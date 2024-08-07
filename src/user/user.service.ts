@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { RegisterDto } from './dto/register-dto';
@@ -10,10 +10,16 @@ export class UserService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
   async create(registerDto: RegisterDto): Promise<User> {
-    const createdUser = new this.userModel(registerDto);
-    return createdUser.save();
+    const newUser = new this.userModel(registerDto);
+    return await newUser.save();
   }
+
+  // เตรียมไว้สำหรับหา user
   async findByEmail(email: string): Promise<UserDocument> {
-    return this.userModel.findOne({ email }).exec();
+    const result = await this.userModel.findOne({ email }).exec();
+    if (!result) {
+      throw new NotFoundException('email not found');
+    }
+    return result;
   }
 }
