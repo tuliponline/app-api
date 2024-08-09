@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import * as moment from 'moment-timezone';
 import { TimeService } from 'src/shared/services/time.service';
 
 export type PlanDocument = Plan & Document;
