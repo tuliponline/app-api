@@ -14,7 +14,6 @@ export class UserService {
     return await newUser.save();
   }
 
-  // เตรียมไว้สำหรับหา user
   async findByEmail(email: string): Promise<UserDocument> {
     const result = await this.userModel.findOne({ email }).exec();
     if (!result) {
