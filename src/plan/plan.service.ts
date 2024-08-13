@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { Plan, PlanDocument } from './schemas/plas.schema';
@@ -33,11 +33,20 @@ export class PlanService {
     return this.planModel.findById(id);
   }
 
-  update(id: number, updatePlanDto: UpdatePlanDto) {
-    return `This action updates a #${id} plan`;
+  async update(id: string, updatePlanDto: UpdatePlanDto): Promise<Plan> {
+    try {
+      return this.planModel.findByIdAndUpdate(id, updatePlanDto, { new: true });
+    } catch (e) {
+      throw new NotFoundException('id not found');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} plan`;
+  async remove(id: string) {
+    try {
+      await this.planModel.findByIdAndDelete(id);
+      return { success: true, message: 'deleted successfully' };
+    } catch (e) {
+      throw new NotFoundException('id not found');
+    }
   }
 }
