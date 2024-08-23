@@ -4,7 +4,8 @@ import { UpdatePlanDto } from './dto/update-plan.dto';
 import { Plan, PlanDocument } from './schemas/plas.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Response, Meta } from './interfaces/response.interface';
+import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
+import { Meta } from 'src/responses/base.response';
 
 @Injectable()
 export class PlanService {
@@ -14,7 +15,7 @@ export class PlanService {
     return newPlan.save();
   }
 
-  async findAll(page: number, limit: number): Promise<Response<Plan>> {
+  async findAll(page: number, limit: number): Promise<SuccessResponseWithMeta> {
     const skip = (page - 1) * limit;
     const total = await this.planModel.countDocuments();
     const totalPages = Math.ceil(total / limit);
@@ -26,7 +27,7 @@ export class PlanService {
       limit,
       totalPages,
     };
-    return { data, meta };
+    return new SuccessResponseWithMeta(data, 'success', meta);
   }
 
   findOne(id: string) {

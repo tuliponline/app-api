@@ -9,7 +9,9 @@ import {
 import { UserService } from './user.service';
 import { RegisterDto } from './dto/register-dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -22,7 +24,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/me')
   getMe(@Request() req) {
-    const user = this.userService.findByEmail(req.user.email);
+    const user = this.userService.findByEmailWithOutPassword(req.user.email);
     return user;
   }
 }

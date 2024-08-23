@@ -14,8 +14,9 @@ export class RegisterDto {
   @IsString()
   @ApiProperty()
   readonly name: string;
+
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
-  readonly tel: string;
+  readonly lastName: string;
 }

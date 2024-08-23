@@ -11,9 +11,10 @@ import {
 import { PlanService } from './plan.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
-import { Response } from './interfaces/response.interface';
-import { Plan } from './schemas/plas.schema';
+import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('plan')
 @Controller('plan')
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
@@ -27,7 +28,7 @@ export class PlanController {
   async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
-  ): Promise<Response<Plan>> {
+  ): Promise<SuccessResponseWithMeta> {
     return this.planService.findAll(page, limit);
   }
 
