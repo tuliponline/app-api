@@ -1,9 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsNumber,
-  IsBoolean,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreatePlanDto {
   @IsString()
@@ -50,5 +45,4 @@ export class CreatePlanDto {
   @IsNotEmpty()
   @ApiProperty()
   readonly is_active: boolean;
-
 }
