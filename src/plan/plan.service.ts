@@ -1,18 +1,29 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
+
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { Plan, PlanDocument } from './schemas/plas.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { SuccessResponse } from 'src/responses/success.response';
 import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
 import { Meta } from 'src/responses/base.response';
 
 @Injectable()
 export class PlanService {
   constructor(@InjectModel(Plan.name) private planModel: Model<PlanDocument>) {}
-  async create(createPlanDto: CreatePlanDto): Promise<Plan> {
-    const newPlan = new this.planModel(createPlanDto);
-    return newPlan.save();
+  async create(createPlanDto: CreatePlanDto): Promise<SuccessResponse> {
+    try {
+      const plan = await new this.planModel(createPlanDto).save();
+
+      return new SuccessResponse(plan);
+    } catch (e) {
+      throw new ConflictException(e.message);
+    }
   }
 
   async findAll(page: number, limit: number): Promise<SuccessResponseWithMeta> {
@@ -30,22 +41,36 @@ export class PlanService {
     return new SuccessResponseWithMeta(data, 'success', meta);
   }
 
-  findOne(id: string) {
-    return this.planModel.findById(id);
-  }
-
-  async update(id: string, updatePlanDto: UpdatePlanDto): Promise<Plan> {
+  async findOne(id: string): Promise<SuccessResponse> {
     try {
-      return this.planModel.findByIdAndUpdate(id, updatePlanDto, { new: true });
+      const plan = await this.planModel.findById(id);
+      if (!plan) {
+        throw new NotFoundException('id not found');
+      }
+      return new SuccessResponse(plan);
     } catch (e) {
       throw new NotFoundException('id not found');
     }
   }
 
-  async remove(id: string) {
+  async update(
+    id: string,
+    updatePlanDto: UpdatePlanDto,
+  ): Promise<SuccessResponse> {
+    try {
+      const plan = await this.planModel.findByIdAndUpdate(id, updatePlanDto, {
+        new: true,
+      });
+      return new SuccessResponse(plan);
+    } catch (e) {
+      throw new NotFoundException('id not found');
+    }
+  }
+
+  async remove(id: string): Promise<SuccessResponse> {
     try {
       await this.planModel.findByIdAndDelete(id);
-      return { success: true, message: 'deleted successfully' };
+      return new SuccessResponse(null);
     } catch (e) {
       throw new NotFoundException('id not found');
     }

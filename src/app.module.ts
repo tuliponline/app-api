@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PlanModule } from './plan/plan.module';
-import { StartQuestModule } from './start-quest/start-quest.module';
+import { TemplateModule } from './template/template.module';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { StartQuestModule } from './start-quest/start-quest.module';
     AuthModule,
     UserModule,
     PlanModule,
-    StartQuestModule,
+    TemplateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

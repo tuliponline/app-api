@@ -1,10 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
-import { TimeService } from 'src/shared/services/time.service';
 
 export type PlanDocument = Plan & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Plan {
   @Prop({ required: true })
   name: string;
@@ -28,16 +26,8 @@ export class Plan {
   is_recommended: boolean;
   @Prop({ require: true })
   is_active: boolean;
-  @Prop({
-    type: MongooseSchema.Types.Date,
-    default: () => new TimeService().getNowInTST(),
-  })
-  created_at: Date;
-  @Prop({
-    type: MongooseSchema.Types.Date,
-    default: () => new TimeService().getNowInTST(),
-  })
-  updated_at: Date;
+  @Prop({ require: true })
+  pagesOdj: [];
 }
 
 export const PlanSchema = SchemaFactory.createForClass(Plan);
