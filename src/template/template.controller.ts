@@ -39,6 +39,14 @@ export class TemplateController {
     return this.templateService.findAll(page, limit, req.user.userId);
   }
 
+  @Get('/admin')
+  async findAllAdmin(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<SuccessResponseWithMeta> {
+    return this.templateService.findAllAdmin(page, limit);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string, @Request() req): Promise<SuccessResponse> {

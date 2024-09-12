@@ -44,7 +44,23 @@ export class TemplateService {
     const query = userId ? { userId } : {};
     const total = await this.templateModel.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-
+    const data = await this.templateModel.find(query).skip(skip).limit(limit);
+    const meta: Meta = {
+      total,
+      page,
+      limit,
+      totalPages,
+    };
+    return new SuccessResponseWithMeta(data, 'success', meta);
+  }
+  async findAllAdmin(
+    page: number,
+    limit: number,
+  ): Promise<SuccessResponseWithMeta> {
+    const skip = (page - 1) * limit;
+    const query = { createdBy: UserRole.ADMIN };
+    const total = await this.templateModel.countDocuments(query);
+    const totalPages = Math.ceil(total / limit);
     const data = await this.templateModel.find(query).skip(skip).limit(limit);
     const meta: Meta = {
       total,
