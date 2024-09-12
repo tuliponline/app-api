@@ -7,19 +7,29 @@ import { SuccessResponse } from 'src/responses/success.response';
 import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
 import { Meta } from 'src/responses/base.response';
 import { UpdateTemplateDto } from './dto/update-template.dto';
+import stringGenerator from '@nakarmi23/random-string-generator';
+import { UserRole } from 'src/user/schemas/user.schema';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class TemplateService {
   constructor(
+    private readonly userService: UserService,
     @InjectModel(Template.name) private templateModel: Model<TemplateDocument>,
   ) {}
   async create(
     createTemplateDto: CreateTemplateDto,
     userId: string,
   ): Promise<SuccessResponse> {
+    const userData = await this.userService.findByUserId(userId);
+    const userRole = userData.userRole ?? UserRole.USER;
+
+    const slug = stringGenerator(10, { lowercase: false, symbol: false });
     const newTemplate = new this.templateModel({
       ...createTemplateDto,
       userId,
+      slug,
+      createdBy: userRole,
     });
     await newTemplate.save();
     return new SuccessResponse('null', 'Template created successfully');

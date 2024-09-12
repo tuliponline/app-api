@@ -32,6 +32,10 @@ export class UserService {
     const result = await this.userModel.findOne({ email }).exec();
     return result;
   }
+  async findByUserId(_id: string): Promise<UserDocument> {
+    const result = await this.userModel.findById(_id).exec();
+    return result;
+  }
 
   async findByEmailWithOutPassword(email: string): Promise<SuccessResponse> {
     const result = await this.userModel

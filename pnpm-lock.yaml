@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@nakarmi23/random-string-generator':
+        specifier: ^1.0.5
+        version: 1.0.5
       '@nestjs/common':
         specifier: ^10.0.0
         version: 10.3.10(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -53,6 +56,9 @@ importers:
       mongoose:
         specifier: ^8.5.2
         version: 8.5.2
+      nanoid:
+        specifier: ^5.0.7
+        version: 5.0.7
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -472,6 +478,10 @@ packages:
 
   '@mongodb-js/saslprep@1.1.8':
     resolution: {integrity: sha512-qKwC/M/nNNaKUBMQ0nuzm47b7ZYWQHN3pcXq4IIcoSBc2hOIrflAxJduIvvqmhoz3gR2TacTAs8vlsCVPkiEdQ==}
+
+  '@nakarmi23/random-string-generator@1.0.5':
+    resolution: {integrity: sha512-WaN9daq0LFoA/FNSO4Rg840qgr46yCZhYIo3bghW5/I8Al1Z3LChPJLcJdKvGho9BzimRkJOF27ZdUAM2H5tvA==}
+    engines: {node: '>=18'}
 
   '@nestjs/cli@10.4.2':
     resolution: {integrity: sha512-fQexIfLHfp6GUgX+CO4fOg+AEwV5ox/LHotQhyZi9wXUQDyIqS0NTTbumr//62EcX35qV4nU0359nYnuEdzG+A==}
@@ -2327,6 +2337,11 @@ packages:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
+  nanoid@5.0.7:
+    resolution: {integrity: sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -3642,6 +3657,8 @@ snapshots:
   '@mongodb-js/saslprep@1.1.8':
     dependencies:
       sparse-bitfield: 3.0.3
+
+  '@nakarmi23/random-string-generator@1.0.5': {}
 
   '@nestjs/cli@10.4.2':
     dependencies:
@@ -5827,6 +5844,8 @@ snapshots:
   mute-stream@0.0.8: {}
 
   mute-stream@1.0.0: {}
+
+  nanoid@5.0.7: {}
 
   natural-compare@1.4.0: {}
 
