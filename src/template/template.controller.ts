@@ -39,7 +39,7 @@ export class TemplateController {
     return this.templateService.findAll(page, limit, req.user.userId);
   }
 
-  @Get('/admin')
+  @Get('/example')
   async findAllAdmin(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
