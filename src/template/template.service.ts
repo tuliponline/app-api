@@ -82,6 +82,17 @@ export class TemplateService {
       throw e; // Re-throw the error for proper handling
     }
   }
+  async findBySlug(slug: string): Promise<SuccessResponse> {
+    try {
+      const template = await this.templateModel.findOne({ slug });
+      if (!template) {
+        throw new NotFoundException('Template not found');
+      }
+      return new SuccessResponse(template, 'success');
+    } catch (e) {
+      throw e; // Re-throw the error for proper handling
+    }
+  }
 
   async update(
     userId: string,
