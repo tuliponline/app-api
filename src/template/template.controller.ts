@@ -53,9 +53,9 @@ export class TemplateController {
     return this.templateService.findOne(req.user.userId, id);
   }
   @UseGuards(JwtAuthGuard)
-  @Get('slug/:slug')
-  findBySlug(@Param('slug') slug: string): Promise<SuccessResponse> {
-    return this.templateService.findBySlug(slug);
+  @Get('app/:app')
+  findBySlug(@Param('app') app: string): Promise<SuccessResponse> {
+    return this.templateService.findByApp(app);
   }
 
   @UseGuards(JwtAuthGuard)

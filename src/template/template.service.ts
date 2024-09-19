@@ -24,11 +24,11 @@ export class TemplateService {
     const userData = await this.userService.findByUserId(userId);
     const userRole = userData.userRole ?? UserRole.USER;
 
-    const slug = stringGenerator(10, { lowercase: false, symbol: false });
+    const app = stringGenerator(10, { lowercase: false, symbol: false });
     const newTemplate = new this.templateModel({
       ...createTemplateDto,
       userId,
-      slug,
+      app,
       createdBy: userRole,
     });
     await newTemplate.save();
@@ -82,9 +82,9 @@ export class TemplateService {
       throw e; // Re-throw the error for proper handling
     }
   }
-  async findBySlug(slug: string): Promise<SuccessResponse> {
+  async findByApp(app: string): Promise<SuccessResponse> {
     try {
-      const template = await this.templateModel.findOne({ slug });
+      const template = await this.templateModel.findOne({ app });
       if (!template) {
         throw new NotFoundException('Template not found');
       }

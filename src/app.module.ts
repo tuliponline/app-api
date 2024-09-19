@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PlanModule } from './plan/plan.module';
 import { TemplateModule } from './template/template.module';
+import { UserPlanModule } from './user-plan/user-plan.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { TemplateModule } from './template/template.module';
     UserModule,
     PlanModule,
     TemplateModule,
+    UserPlanModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

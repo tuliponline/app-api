@@ -35,7 +35,7 @@ export class Template {
   @Prop({ required: true })
   name: string;
   @Prop({ required: true })
-  slug: string;
+  app: string;
   @Prop({ required: true })
   image: string;
   @Prop({ required: true })

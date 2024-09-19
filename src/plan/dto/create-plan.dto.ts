@@ -24,7 +24,7 @@ export class CreatePlanDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
-  readonly free_domains: number;
+  readonly freeDomains: number;
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
@@ -32,7 +32,7 @@ export class CreatePlanDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  readonly site_analytics: string;
+  readonly siteAnalytics: string;
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
@@ -40,9 +40,9 @@ export class CreatePlanDto {
   @IsBoolean()
   @IsNotEmpty()
   @ApiProperty()
-  readonly is_recommended: boolean;
+  readonly isRecommended: boolean;
   @IsBoolean()
   @IsNotEmpty()
   @ApiProperty()
-  readonly is_active: boolean;
+  readonly isActive: boolean;
 }

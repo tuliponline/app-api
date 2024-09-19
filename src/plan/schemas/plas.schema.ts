@@ -15,19 +15,17 @@ export class Plan {
   @Prop({ require: true })
   pages: number;
   @Prop({ require: true })
-  free_domains: number;
+  freeDomains: number;
   @Prop({ require: true })
   marketing_suite: string;
   @Prop({ require: true })
-  site_analytics: string;
+  siteAnalytics: string;
   @Prop({ require: true })
   ecommerce: string;
   @Prop({ require: true })
-  is_recommended: boolean;
+  isRecommended: boolean;
   @Prop({ require: true })
-  is_active: boolean;
-  @Prop({ require: true })
-  pagesOdj: [];
+  isActive: boolean;
 }
 
 export const PlanSchema = SchemaFactory.createForClass(Plan);

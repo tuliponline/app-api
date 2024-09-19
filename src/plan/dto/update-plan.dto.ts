@@ -25,15 +25,15 @@ export class UpdatePlanDto extends PartialType(CreatePlanDto) {
 
   @IsNumber()
   @ApiProperty()
-  free_domains: number;
+  freeDomains: number;
 
   @IsString()
   @ApiProperty()
-  marketing_suite: string;
+  marketingSuite: string;
 
   @IsString()
   @ApiProperty()
-  site_analytics: string;
+  siteAnalytics: string;
 
   @IsString()
   @ApiProperty()
@@ -41,9 +41,9 @@ export class UpdatePlanDto extends PartialType(CreatePlanDto) {
 
   @IsBoolean()
   @ApiProperty()
-  is_recommended: boolean;
+  isRecommended: boolean;
 
   @IsBoolean()
   @ApiProperty()
-  is_active: boolean;
+  isActive: boolean;
 }

@@ -7,12 +7,15 @@ import { UserRole } from 'src/user/schemas/user.schema';
 export class CreateTemplateDto {
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({ example: 'ME || CUSTOMER' })
   readonly pageFor: PageFor;
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example:
+      'ECOMMERCE || MARKETING || SALEPAGE || BLOG || NEWSLETTER || PORTFOLIO',
+  })
   readonly pageType: PageType;
 
   @IsMongoId()
@@ -42,7 +45,7 @@ export class CreateTemplateDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({ example: 'PUBLISH || DRAFT || DISABLE' })
   readonly status: TemplateStatus;
 
   readonly createBy: UserRole;
