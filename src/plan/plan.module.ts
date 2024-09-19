@@ -10,5 +10,6 @@ import { Plan, PlanSchema } from './schemas/plas.schema';
   ],
   controllers: [PlanController],
   providers: [PlanService],
+  exports: [PlanService],
 })
 export class PlanModule {}

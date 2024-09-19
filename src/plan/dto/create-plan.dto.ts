@@ -12,10 +12,6 @@ export class CreatePlanDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
-  readonly collaborators: number;
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty()
   readonly storage: number;
   @IsNumber()
   @IsNotEmpty()
@@ -24,19 +20,11 @@ export class CreatePlanDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
-  readonly freeDomains: number;
-  @IsString()
+  readonly salePage: number;
+  @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
-  readonly marketing_suite: string;
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  readonly siteAnalytics: string;
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  readonly ecommerce: string;
+  readonly duration: number;
   @IsBoolean()
   @IsNotEmpty()
   @ApiProperty()

@@ -15,27 +15,18 @@ export class CreateUserPlanDto {
   price: number;
   @IsNumber()
   @IsNotEmpty()
-  collaborators: number;
-  @IsNumber()
-  @IsNotEmpty()
   storage: number;
   @IsNumber()
   @IsNotEmpty()
   pages: number;
   @IsNumber()
   @IsNotEmpty()
-  free_domains: number;
-  @IsString()
+  salePage: number;
+  @IsNumber()
   @IsNotEmpty()
-  marketing_suite: string;
-  @IsString()
+  duration: number;
+  @IsNumber()
   @IsNotEmpty()
-  site_analytics: string;
-  @IsString()
-  @IsNotEmpty()
-  ecommerce: string;
-  @IsNotEmpty()
-  @IsString()
   startDate: Date;
   @IsNotEmpty()
   @IsString()

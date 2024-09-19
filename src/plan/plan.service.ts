@@ -19,7 +19,6 @@ export class PlanService {
   async create(createPlanDto: CreatePlanDto): Promise<SuccessResponse> {
     try {
       const plan = await new this.planModel(createPlanDto).save();
-
       return new SuccessResponse(plan);
     } catch (e) {
       throw new ConflictException(e.message);

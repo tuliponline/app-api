@@ -5,6 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
+import {
+  UserPlan,
+  UserPlanDocument,
+} from 'src/user-plan/schemas/user-plan.schema';
 import { RegisterDto } from './dto/register-dto';
 import { Model } from 'mongoose';
 import { SuccessResponse } from '../responses/success.response';
@@ -13,6 +17,8 @@ import { SuccessResponse } from '../responses/success.response';
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(UserPlan.name)
+    private readonly userPlanModel: Model<UserPlanDocument>,
   ) {}
   async create(registerDto: RegisterDto) {
     const existingUser = await this.userModel
@@ -46,6 +52,14 @@ export class UserService {
     if (!result) {
       throw new NotFoundException('email not found');
     }
-    return new SuccessResponse(result);
+    const userPlans = await this.userPlanModel
+      .findOne({ userId: result._id })
+      .exec();
+    const response = {
+      ...result.toObject(), // Convert Mongoose document to plain object
+      userPlans: userPlans,
+    };
+
+    return new SuccessResponse(response);
   }
 }

@@ -13,10 +13,6 @@ export class UpdatePlanDto extends PartialType(CreatePlanDto) {
 
   @IsNumber()
   @ApiProperty()
-  collaborators: number;
-
-  @IsNumber()
-  @ApiProperty()
   storage: number;
 
   @IsNumber()
@@ -25,19 +21,10 @@ export class UpdatePlanDto extends PartialType(CreatePlanDto) {
 
   @IsNumber()
   @ApiProperty()
-  freeDomains: number;
-
-  @IsString()
+  salePage: number;
+  @IsNumber()
   @ApiProperty()
-  marketingSuite: string;
-
-  @IsString()
-  @ApiProperty()
-  siteAnalytics: string;
-
-  @IsString()
-  @ApiProperty()
-  ecommerce: string;
+  duration: number;
 
   @IsBoolean()
   @ApiProperty()
