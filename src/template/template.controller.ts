@@ -52,7 +52,7 @@ export class TemplateController {
   findOne(@Param('id') id: string, @Request() req): Promise<SuccessResponse> {
     return this.templateService.findOne(req.user.userId, id);
   }
-  @UseGuards(JwtAuthGuard)
+
   @Get('app/:app')
   findBySlug(@Param('app') app: string): Promise<SuccessResponse> {
     return this.templateService.findByApp(app);
