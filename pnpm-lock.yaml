@@ -56,9 +56,6 @@ importers:
       mongoose:
         specifier: ^8.5.2
         version: 8.5.2
-      nanoid:
-        specifier: ^5.0.7
-        version: 5.0.7
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -68,6 +65,9 @@ importers:
       passport-local:
         specifier: ^1.0.0
         version: 1.0.0
+      randomized-string:
+        specifier: ^2.0.1
+        version: 2.0.1
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2
@@ -2337,11 +2337,6 @@ packages:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  nanoid@5.0.7:
-    resolution: {integrity: sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -2577,6 +2572,10 @@ packages:
 
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
+
+  randomized-string@2.0.1:
+    resolution: {integrity: sha512-pO1z/2gf/kA7ffsVdVySElIeSeeAVBIj1x35OJcwpOvxfsFnKTow+g6qJdjQGl90PMC6GE9G8eOFk5XFVJgrFA==}
+    hasBin: true
 
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
@@ -5845,8 +5844,6 @@ snapshots:
 
   mute-stream@1.0.0: {}
 
-  nanoid@5.0.7: {}
-
   natural-compare@1.4.0: {}
 
   negotiator@0.6.3: {}
@@ -6053,6 +6050,8 @@ snapshots:
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
+
+  randomized-string@2.0.1: {}
 
   range-parser@1.2.1: {}
 
