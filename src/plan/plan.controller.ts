@@ -8,8 +8,6 @@ import {
   Delete,
   Query,
   UseGuards,
-  Request,
-  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import { PlanService } from './plan.service';
@@ -17,8 +15,9 @@ import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserService } from 'src/user/user.service';
+import { AdminStrategy } from 'src/auth/strategies/admin.strategy';
+// import { AdminGuard } from '../auth/strategies/admin.guards';
 
 @ApiTags('plan')
 @Controller('plan')
@@ -28,16 +27,9 @@ export class PlanController {
     private readonly userService: UserService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminStrategy)
   @Post()
-  async create(@Body() createPlanDto: CreatePlanDto, @Request() req) {
-    const isAdmin = await this.userService.isAdmin(req.user.userId);
-    if (!isAdmin) {
-      throw new ForbiddenException(
-        "You don't have permission to access this route",
-      );
-    }
-
+  async create(@Body() createPlanDto: CreatePlanDto) {
     return this.planService.create(createPlanDto);
   }
 
@@ -58,19 +50,9 @@ export class PlanController {
     return this.planService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminStrategy)
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updatePlanDto: UpdatePlanDto,
-    @Request() req,
-  ) {
-    const isAdmin = await this.userService.isAdmin(req.user.userId);
-    if (!isAdmin) {
-      throw new ForbiddenException(
-        "You don't have permission to access this route",
-      );
-    }
+  async update(@Param('id') id: string, @Body() updatePlanDto: UpdatePlanDto) {
     const plan = await this.planService.findOne(id);
     if (!plan) {
       throw new NotFoundException('planId not found');
@@ -79,15 +61,9 @@ export class PlanController {
     return this.planService.update(id, updatePlanDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminStrategy)
   @Delete(':id')
-  async remove(@Param('id') id: string, @Request() req) {
-    const isAdmin = await this.userService.isAdmin(req.user.userId);
-    if (!isAdmin) {
-      throw new ForbiddenException(
-        "You don't have permission to access this route",
-      );
-    }
+  async remove(@Param('id') id: string) {
     const plan = await this.planService.findOne(id);
     if (!plan) {
       throw new NotFoundException('planId not found');
