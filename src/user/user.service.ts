@@ -13,6 +13,7 @@ import { RegisterDto } from './dto/register-dto';
 import { Model } from 'mongoose';
 import { SuccessResponse } from '../responses/success.response';
 import { UserPlanService } from 'src/user-plan/user-plan.service';
+import { UserRole } from 'src/user/schemas/user.schema';
 
 @Injectable()
 export class UserService {
@@ -43,6 +44,14 @@ export class UserService {
   async findByUserId(_id: string): Promise<UserDocument> {
     const result = await this.userModel.findById(_id).exec();
     return result;
+  }
+
+  async isAdmin(userId: string): Promise<boolean> {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user.userRole === UserRole.ADMIN;
   }
 
   async findByEmailWithOutPassword(email: string): Promise<SuccessResponse> {

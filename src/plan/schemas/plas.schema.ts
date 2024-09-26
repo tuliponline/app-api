@@ -12,6 +12,10 @@ export class Plan {
   discount: number;
   @Prop()
   spacialPrice: number;
+  @Prop()
+  vat: number;
+  @Prop()
+  total: number;
   @Prop({ require: true })
   storage: number;
   @Prop({ require: true })

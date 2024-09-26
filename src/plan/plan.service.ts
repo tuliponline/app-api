@@ -49,9 +49,13 @@ export class PlanService {
       }
 
       const spacialPrice = plan.price - plan.discount;
+      const vat = Math.round(spacialPrice * 0.07);
+      const total = spacialPrice + vat;
       const response = {
         ...plan.toObject(), // Convert Mongoose document to plain object
         spacialPrice: spacialPrice,
+        vat: vat,
+        total: total,
       };
       return new SuccessResponse(response);
     } catch (e) {
