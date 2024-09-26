@@ -12,6 +12,7 @@ import {
 import { RegisterDto } from './dto/register-dto';
 import { Model } from 'mongoose';
 import { SuccessResponse } from '../responses/success.response';
+import { UserPlanService } from 'src/user-plan/user-plan.service';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,7 @@ export class UserService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(UserPlan.name)
     private readonly userPlanModel: Model<UserPlanDocument>,
+    private readonly userPlanService: UserPlanService,
   ) {}
   async create(registerDto: RegisterDto) {
     const existingUser = await this.userModel
@@ -52,9 +54,9 @@ export class UserService {
     if (!result) {
       throw new NotFoundException('email not found');
     }
-    const userPlans = await this.userPlanModel
-      .findOne({ userId: result._id })
-      .exec();
+    const userPlans = await this.userPlanService.findByUserId(
+      result._id.toString(),
+    );
     const response = {
       ...result.toObject(), // Convert Mongoose document to plain object
       userPlans: userPlans,

@@ -1,7 +1,8 @@
 import {
   Controller,
-  // Get,
+  Get,
   Post,
+  Query,
   // Body,
   // Patch,
   // Param,
@@ -14,9 +15,13 @@ import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 // import { CreateUserPlanDto } from 'src/user-plan/dto/create-user-plan.dto';
 import { UserPlanService } from 'src/user-plan/user-plan.service';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { PaymentCallbackDto } from './dto/payment-callback.dto';
+import { ApiTags, ApiExcludeEndpoint } from '@nestjs/swagger';
 // import { CreateOrderDto } from './dto/create-order.dto';
 // import { UpdateOrderDto } from './dto/update-order.dto';
 
+@ApiTags('order')
 @Controller('orders')
 export class OrdersController {
   constructor(
@@ -26,30 +31,27 @@ export class OrdersController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  createUserPlan(@Body() planId: string, @Request() req) {
-    console.log('req.user.userId', req.user.userId);
-    console.log('planId', planId);
-
-    return this.userPlanService.create(req.user.userId, planId);
+  createOrder(@Body() createOrderDto: CreateOrderDto, @Request() req) {
+    return this.ordersService.create(
+      req.user.email,
+      req.user.userId,
+      createOrderDto.planId,
+    );
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.ordersService.findAll();
-  // }
+  @ApiExcludeEndpoint()
+  @Post('payment-callback')
+  paymentCallback(@Body() paymentCallbackDto: PaymentCallbackDto) {
+    this.ordersService.PaymentCallbackDto(paymentCallbackDto);
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.ordersService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-  //   return this.ordersService.update(+id, updateOrderDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.ordersService.remove(+id);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Request() req,
+  ) {
+    return this.ordersService.findAll(page, limit, req.user.userId);
+  }
 }

@@ -4,11 +4,11 @@ import { Types } from 'mongoose';
 
 export type UserPlanDocument = UserPlan & Document;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, versionKey: false })
 export class UserPlan {
-  @Prop({ required: true, Types: Types.ObjectId })
-  orderId: Types.ObjectId;
-  @Prop({ required: true, Types: Types.ObjectId, ref: 'User' })
+  @Prop()
+  orderNo: string;
+  @Prop({ required: true, Types: Types.ObjectId, ref: 'User', unique: true })
   userId: string;
   @Prop({ required: true })
   name: string;
@@ -26,6 +26,8 @@ export class UserPlan {
   startDate: Date;
   @Prop({ required: true, type: Date })
   endDate: Date;
+  @Prop()
+  hasExpired: boolean;
 }
 
 export const UserPlanSchema = SchemaFactory.createForClass(UserPlan);

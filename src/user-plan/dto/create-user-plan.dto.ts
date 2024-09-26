@@ -3,7 +3,7 @@ import { IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class CreateUserPlanDto {
   @IsString()
   @IsNotEmpty()
-  orderId: string;
+  orderNo: string;
   @IsMongoId()
   @IsNotEmpty()
   userId: string;
