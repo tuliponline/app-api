@@ -9,6 +9,10 @@ export class Plan {
   @Prop({ require: true })
   price: number;
   @Prop({ require: true })
+  discount: number;
+  @Prop()
+  spacialPrice: number;
+  @Prop({ require: true })
   storage: number;
   @Prop({ require: true })
   pages: number;

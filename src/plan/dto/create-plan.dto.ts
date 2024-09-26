@@ -12,6 +12,10 @@ export class CreatePlanDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
+  readonly discount: number;
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty()
   readonly storage: number;
   @IsNumber()
   @IsNotEmpty()

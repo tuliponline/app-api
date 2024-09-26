@@ -43,10 +43,17 @@ export class PlanService {
   async findOne(id: string): Promise<SuccessResponse> {
     try {
       const plan = await this.planModel.findById(id);
+
       if (!plan) {
         throw new NotFoundException('id not found');
       }
-      return new SuccessResponse(plan);
+
+      const spacialPrice = plan.price - plan.discount;
+      const response = {
+        ...plan.toObject(), // Convert Mongoose document to plain object
+        spacialPrice: spacialPrice,
+      };
+      return new SuccessResponse(response);
     } catch (e) {
       throw new NotFoundException('id not found');
     }

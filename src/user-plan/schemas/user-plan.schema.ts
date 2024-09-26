@@ -15,6 +15,12 @@ export class UserPlan {
   @Prop({ require: true })
   price: number;
   @Prop({ require: true })
+  discount: number;
+  @Prop({ require: true })
+  vat: number;
+  @Prop({ require: true })
+  total: number;
+  @Prop({ require: true })
   storage: number;
   @Prop({ require: true })
   pages: number;

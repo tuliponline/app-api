@@ -12,7 +12,6 @@ export enum OrderStatus {
 
 @Schema({ timestamps: true })
 export class Order {
-
   @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
   userId: Types.ObjectId;
 
@@ -28,6 +27,12 @@ export class Order {
   @Prop({ required: true })
   productdetail: string;
 
+  @Prop({ required: true })
+  price: number;
+  @Prop({ required: true })
+  discount: number;
+  @Prop({ required: true })
+  vat: number;
   @Prop({ required: true })
   total: number;
 

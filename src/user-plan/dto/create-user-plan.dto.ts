@@ -15,6 +15,15 @@ export class CreateUserPlanDto {
   price: number;
   @IsNumber()
   @IsNotEmpty()
+  discount: number;
+  @IsNumber()
+  @IsNotEmpty()
+  vat: number;
+  @IsNumber()
+  @IsNotEmpty()
+  total: number;
+  @IsNumber()
+  @IsNotEmpty()
   storage: number;
   @IsNumber()
   @IsNotEmpty()

@@ -9,6 +9,9 @@ export class CreateOrderDto {
   refno: string;
   customeremail: string;
   productdetail: string;
+  price: number;
+  discount: number;
+  vat: number;
   total: number;
   status: string;
 }

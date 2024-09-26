@@ -49,12 +49,19 @@ export class OrdersService {
       throw new ConflictException('User already has a plan');
     }
 
+    const finalPrict = plan.data.price - plan.data.discount;
+    const vat = Math.round(finalPrict * 0.07);
+    const total = finalPrict + vat;
+
     const createOrderDto = new CreateOrderDto();
     createOrderDto.planId = planId;
     createOrderDto.userId = userId;
     createOrderDto.customeremail = userEmail;
     createOrderDto.productdetail = plan.data.name;
-    createOrderDto.total = plan.data.price;
+    createOrderDto.price = plan.data.price;
+    createOrderDto.discount = plan.data.discount;
+    createOrderDto.vat = vat;
+    createOrderDto.total = total;
     createOrderDto.status = OrderStatus.CREATED;
 
     let generatedRefno;

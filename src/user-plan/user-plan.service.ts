@@ -25,11 +25,17 @@ export class UserPlanService {
     if (!plan) {
       throw new NotFoundException('planId not found');
     }
+    const finalPrict = plan.data.price - plan.data.discount;
+    const vat = Math.round(finalPrict * 0.07);
+    const total = finalPrict + vat;
     const existingPlan = await this.userPlanModel.findOne({ userId });
     if (existingPlan) {
       existingPlan.orderNo = orderNo;
       existingPlan.name = plan.data.name;
       existingPlan.price = plan.data.price;
+      existingPlan.discount = plan.data.discount;
+      existingPlan.vat = vat;
+      existingPlan.total = total;
       existingPlan.storage = plan.data.storage;
       existingPlan.pages = plan.data.pages;
       existingPlan.salePage = plan.data.salePage;
@@ -53,6 +59,9 @@ export class UserPlanService {
         orderNo,
         name: plan.data.name,
         price: plan.data.price,
+        discount: plan.data.discount,
+        vat,
+        total,
         storage: plan.data.storage,
         pages: plan.data.pages,
         salePage: plan.data.salePage,

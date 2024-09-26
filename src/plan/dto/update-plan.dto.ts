@@ -10,6 +10,9 @@ export class UpdatePlanDto extends PartialType(CreatePlanDto) {
   @IsNumber()
   @ApiProperty()
   price: number;
+  @IsNumber()
+  @ApiProperty()
+  discount: number;
 
   @IsNumber()
   @ApiProperty()
