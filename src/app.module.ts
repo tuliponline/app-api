@@ -9,6 +9,7 @@ import { PlanModule } from './plan/plan.module';
 import { TemplateModule } from './template/template.module';
 import { UserPlanModule } from './user-plan/user-plan.module';
 import { OrdersModule } from './orders/orders.module';
+import { UploadImageModule } from './upload-image/upload-image.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { OrdersModule } from './orders/orders.module';
     TemplateModule,
     UserPlanModule,
     OrdersModule,
+    UploadImageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
