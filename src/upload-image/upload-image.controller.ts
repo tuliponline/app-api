@@ -60,19 +60,19 @@ export class UploadImageController {
     @Query('limit') limit: number = 10,
     @Request() req,
   ) {
-    return this.uploadImageService.findAll(page, limit, req.user.userId);
+    return await this.uploadImageService.findAll(page, limit, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Request() req) {
-    const image = this.uploadImageService.findOne(req.user.userId, id);
+    const image = await this.uploadImageService.findOne(req.user.userId, id);
     return new SuccessResponse({ image });
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Request() req) {
-    return this.uploadImageService.deleteImage(req.user.userId, id);
+    return await this.uploadImageService.deleteImage(req.user.userId, id);
   }
 }
