@@ -14,7 +14,6 @@ import {
 import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 // import { CreateUserPlanDto } from 'src/user-plan/dto/create-user-plan.dto';
-import { UserPlanService } from 'src/user-plan/user-plan.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { PaymentCallbackDto } from './dto/payment-callback.dto';
 import { ApiTags, ApiExcludeEndpoint } from '@nestjs/swagger';
@@ -24,10 +23,7 @@ import { ApiTags, ApiExcludeEndpoint } from '@nestjs/swagger';
 @ApiTags('order')
 @Controller('orders')
 export class OrdersController {
-  constructor(
-    private readonly ordersService: OrdersService,
-    private readonly userPlanService: UserPlanService,
-  ) {}
+  constructor(private readonly ordersService: OrdersService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()

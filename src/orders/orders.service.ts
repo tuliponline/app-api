@@ -21,6 +21,7 @@ import {
 import { SuccessResponse } from '../responses/success.response';
 import { SuccessResponseWithMeta } from '../responses/success.response.withmeta';
 import { Meta } from 'src/responses/base.response';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class OrdersService {
@@ -30,6 +31,7 @@ export class OrdersService {
     private readonly userPlanService: UserPlanService,
     @InjectModel(UserPlan.name)
     private readonly userPlanModel: Model<UserPlanDocument>,
+    private readonly configService: ConfigService,
   ) {}
   async create(
     userEmail: string,
@@ -78,10 +80,15 @@ export class OrdersService {
     }
 
     createOrderDto.refno = generatedRefno;
+    const merchantId = this.configService.get('MERCHANT_ID');
 
     try {
       const order = await new this.orderModel(createOrderDto).save();
-      return new SuccessResponse(order);
+      const response = {
+        ...order.toObject(),
+        merchantId: merchantId,
+      };
+      return new SuccessResponse(response);
     } catch (e) {
       throw new Error(e.message);
     }

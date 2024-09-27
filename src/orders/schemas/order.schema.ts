@@ -18,6 +18,9 @@ export class Order {
   @Prop({ required: true, type: Types.ObjectId, ref: 'Plan' })
   planId: Types.ObjectId;
 
+  @Prop()
+  merchantId: string;
+
   @Prop({ required: true })
   refno: string;
 

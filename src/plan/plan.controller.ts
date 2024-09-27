@@ -16,8 +16,8 @@ import { UpdatePlanDto } from './dto/update-plan.dto';
 import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from 'src/user/user.service';
-import { AdminStrategy } from 'src/auth/strategies/admin.strategy';
-// import { AdminGuard } from '../auth/strategies/admin.guards';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+// import { AdminAuthGuard } from 'src/auth/admin-auth.guard';
 
 @ApiTags('plan')
 @Controller('plan')
@@ -27,7 +27,7 @@ export class PlanController {
     private readonly userService: UserService,
   ) {}
 
-  @UseGuards(AdminStrategy)
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createPlanDto: CreatePlanDto) {
     return this.planService.create(createPlanDto);
@@ -50,7 +50,7 @@ export class PlanController {
     return this.planService.findOne(id);
   }
 
-  @UseGuards(AdminStrategy)
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updatePlanDto: UpdatePlanDto) {
     const plan = await this.planService.findOne(id);
@@ -61,7 +61,7 @@ export class PlanController {
     return this.planService.update(id, updatePlanDto);
   }
 
-  @UseGuards(AdminStrategy)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const plan = await this.planService.findOne(id);
