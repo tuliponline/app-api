@@ -9,10 +9,12 @@ import { UserPlan, UserPlanDocument } from './schemas/user-plan.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PlanService } from 'src/plan/plan.service';
+import { UploadImageService } from 'src/upload-image/upload-image.service';
 
 @Injectable()
 export class UserPlanService {
   constructor(
+    private uploadImageService: UploadImageService,
     private planService: PlanService,
     @InjectModel(UserPlan.name) private userPlanModel: Model<UserPlanDocument>,
   ) {}
@@ -107,16 +109,20 @@ export class UserPlanService {
     const currentDate = new Date();
     const endDate = new Date(userPlan.endDate);
 
+    const diskUsed = await this.uploadImageService.sumImageSizes(userId);
+
     if (currentDate >= endDate) {
       return {
         ...userPlan.toObject(),
         hasExpired: true,
+        diskUsed,
       };
     } else {
       // Current time is before end date
       return {
         ...userPlan.toObject(),
         hasExpired: false,
+        diskUsed,
       };
     }
   }

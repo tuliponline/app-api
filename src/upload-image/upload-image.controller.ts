@@ -64,6 +64,12 @@ export class UploadImageController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/disk-used')
+  async diskUsed(@Request() req) {
+    return await this.uploadImageService.sumImageSizes(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Request() req) {
     const image = await this.uploadImageService.findOne(req.user.userId, id);

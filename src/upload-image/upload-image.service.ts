@@ -32,7 +32,7 @@ export class UploadImageService {
   async uploadFile(userId: string, fileName: string, buffer: Buffer) {
     const params = {
       Bucket: 'we11-storage',
-      Key: `funnel/${fileName}`,
+      Key: `funnel/${userId}/${fileName}`,
       Body: buffer,
       ACL: 'public-read',
     };
@@ -60,7 +60,10 @@ export class UploadImageService {
     const imageName = image.fileName;
 
     await this.s3
-      .deleteObject({ Bucket: 'we11-storage', Key: `funnel/${imageName}` })
+      .deleteObject({
+        Bucket: 'we11-storage',
+        Key: `funnel/${userId}/${imageName}`,
+      })
       .promise();
     await this.uploadImageModel.deleteOne({ _id: id });
     return new SuccessResponse('Image deleted successfully');
@@ -117,5 +120,11 @@ export class UploadImageService {
       throw new NotFoundException('Image not found');
     }
     return image;
+  }
+
+  async sumImageSizes(userId: string): Promise<number> {
+    const images = await this.uploadImageModel.find({ userId });
+    const totalSize = images.reduce((sum, image) => sum + image.size, 0);
+    return totalSize;
   }
 }

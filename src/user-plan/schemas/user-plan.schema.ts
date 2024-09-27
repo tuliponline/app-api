@@ -34,6 +34,8 @@ export class UserPlan {
   endDate: Date;
   @Prop()
   hasExpired: boolean;
+  @Prop()
+  diskUsed: number;
 }
 
 export const UserPlanSchema = SchemaFactory.createForClass(UserPlan);
