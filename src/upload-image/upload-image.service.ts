@@ -2,12 +2,18 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import {
   UploadImage,
   UploadImageDocument,
 } from 'src/upload-image/schemas/upload-image.schema';
+import {
+  UploadImageScreenshot,
+  UploadImageScreenshotDocument,
+} from 'src/upload-image/schemas/upload-image-screenshot.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SuccessResponse } from 'src/responses/success.response';
@@ -20,9 +26,12 @@ import { UserRole } from 'src/user/schemas/user.schema';
 export class UploadImageService {
   private s3: AWS.S3;
   constructor(
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     @InjectModel(UploadImage.name)
     private uploadImageModel: Model<UploadImageDocument>,
+    @InjectModel(UploadImageScreenshot.name)
+    private uploadImageScreenshotModel: Model<UploadImageScreenshotDocument>,
   ) {
     this.s3 = new AWS.S3({
       accessKeyId: process.env.DO_SPACES_ACCESS_KEY_ID,
@@ -32,10 +41,16 @@ export class UploadImageService {
     });
   }
 
-  async uploadFile(userId: string, fileName: string, buffer: Buffer) {
+  async uploadFile(
+    userId: string,
+    fileName: string,
+    buffer: Buffer,
+    screenshot: boolean = false,
+  ) {
+    const finalFileName = fileName.replace(/\s/g, '').toLowerCase();
     const params = {
       Bucket: 'we11-storage',
-      Key: `funnel/${userId}/${fileName}`,
+      Key: `funnel/${userId}/${finalFileName}`,
       Body: buffer,
       ACL: 'public-read',
     };
@@ -43,9 +58,20 @@ export class UploadImageService {
     if (!Location) {
       throw new BadRequestException('Failed to upload image');
     }
+
+    if (screenshot) {
+      const imageDb = await this.addImageScreenShotToDb(
+        finalFileName,
+        Location,
+      );
+      if (!imageDb) {
+        throw new BadRequestException('Failed to upload image to database');
+      }
+      return imageDb;
+    }
     const imageDb = await this.addImageToDb(
       userId,
-      fileName,
+      finalFileName,
       Location,
       buffer.length,
     );
@@ -55,8 +81,13 @@ export class UploadImageService {
     return imageDb;
   }
 
-  async deleteImage(userId: string, id: string) {
-    const image = await this.uploadImageModel.findOne({ _id: id, userId });
+  async deleteImage(userId: string, id: string, screenshot: boolean = false) {
+    let image;
+    if (screenshot) {
+      image = await this.uploadImageScreenshotModel.findById(id);
+    } else {
+      image = await this.uploadImageModel.findOne({ _id: id, userId });
+    }
     if (!image) {
       throw new NotFoundException('Image not found');
     }
@@ -68,10 +99,31 @@ export class UploadImageService {
         Key: `funnel/${userId}/${imageName}`,
       })
       .promise();
+    if (screenshot) {
+      await this.uploadImageScreenshotModel.deleteOne({ _id: id });
+      return new SuccessResponse('Image deleted successfully');
+    }
+
     await this.uploadImageModel.deleteOne({ _id: id });
     return new SuccessResponse('Image deleted successfully');
   }
 
+  async addImageScreenShotToDb(fileName: string, imageUrl: string) {
+    const existingImage = await this.uploadImageScreenshotModel.findOne({
+      imageUrl,
+    });
+    if (existingImage) {
+      await existingImage.save();
+      return existingImage;
+    } else {
+      const newUploadImage = new this.uploadImageScreenshotModel({
+        imageUrl,
+        fileName,
+      });
+      const data = await newUploadImage.save();
+      return data;
+    }
+  }
   async addImageToDb(
     userId: string,
     fileName: string,
@@ -119,9 +171,68 @@ export class UploadImageService {
     };
     return new SuccessResponseWithMeta(data, 'success', meta);
   }
+  async findScreenshotAll(
+    page: number,
+    limit: number,
+  ): Promise<SuccessResponseWithMeta> {
+    const skip = (page - 1) * limit;
+    const query = {};
+    const total = await this.uploadImageScreenshotModel.countDocuments(query);
+    const totalPages = Math.ceil(total / limit);
+    const data = await this.uploadImageScreenshotModel
+      .find(query)
+      .skip(skip)
+      .limit(limit);
+    const meta: Meta = {
+      total,
+      page,
+      limit,
+      totalPages,
+    };
+    return new SuccessResponseWithMeta(data, 'success', meta);
+  }
 
-  async findOne(userId: string, id: string) {
-    const image = await this.uploadImageModel.findOne({ _id: id, userId });
+  async findAdminImages(
+    page: number,
+    limit: number,
+  ): Promise<SuccessResponseWithMeta> {
+    const skip = (page - 1) * limit;
+    const query = { createdBy: UserRole.ADMIN };
+    const total = await this.uploadImageModel.countDocuments(query);
+    const totalPages = Math.ceil(total / limit);
+    const data = await this.uploadImageModel
+      .find(query)
+      .select('-userId')
+      .skip(skip)
+      .limit(limit);
+    const meta: Meta = {
+      total,
+      page,
+      limit,
+      totalPages,
+    };
+    return new SuccessResponseWithMeta(data, 'success', meta);
+  }
+
+  async findAdminImage(id: string) {
+    const image = await this.uploadImageModel
+      .findOne({
+        _id: id,
+        createdBy: UserRole.ADMIN,
+      })
+      .select('-userId');
+    if (!image) {
+      throw new NotFoundException('Image not found');
+    }
+    return image;
+  }
+  async findOne(userId: string, id: string, screenshot = false) {
+    let image;
+    if (screenshot) {
+      image = await this.uploadImageScreenshotModel.findById(id);
+    } else {
+      image = await this.uploadImageModel.findOne({ _id: id, userId });
+    }
     if (!image) {
       throw new NotFoundException('Image not found');
     }

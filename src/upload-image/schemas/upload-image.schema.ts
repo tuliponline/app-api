@@ -16,7 +16,7 @@ export class UploadImage {
 
   @Prop({ required: true })
   size: number;
-  @Prop({ required: true, enum: UserRole })
+  @Prop({ required: true, enum: UserRole, default: UserRole.USER })
   createdBy: UserRole;
 }
 
