@@ -13,11 +13,14 @@ import { Model } from 'mongoose';
 import { SuccessResponse } from 'src/responses/success.response';
 import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
 import { Meta } from 'src/responses/base.response';
+import { UserService } from 'src/user/user.service';
+import { UserRole } from 'src/user/schemas/user.schema';
 
 @Injectable()
 export class UploadImageService {
   private s3: AWS.S3;
   constructor(
+    private readonly userService: UserService,
     @InjectModel(UploadImage.name)
     private uploadImageModel: Model<UploadImageDocument>,
   ) {
@@ -81,11 +84,14 @@ export class UploadImageService {
       await existingImage.save();
       return existingImage;
     } else {
+      const userData = await this.userService.findByUserId(userId);
+      const userRole = userData.userRole ?? UserRole.USER;
       const newUploadImage = new this.uploadImageModel({
         userId,
         imageUrl,
         size,
         fileName,
+        createdBy: userRole,
       });
       const data = await newUploadImage.save();
       return data;

@@ -17,7 +17,6 @@ import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from 'src/user/user.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-// import { AdminAuthGuard } from 'src/auth/admin-auth.guard';
 
 @ApiTags('plan')
 @Controller('plan')

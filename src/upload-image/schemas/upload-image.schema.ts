@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-
+import { UserRole } from 'src/user/schemas/user.schema';
 export type UploadImageDocument = UploadImage & Document;
 
 @Schema({ timestamps: true })
@@ -16,6 +16,8 @@ export class UploadImage {
 
   @Prop({ required: true })
   size: number;
+  @Prop({ required: true, enum: UserRole })
+  createdBy: UserRole;
 }
 
 export const UploadImageSchema = SchemaFactory.createForClass(UploadImage);
