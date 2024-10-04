@@ -15,16 +15,13 @@ import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
 import { ApiTags } from '@nestjs/swagger';
-import { UserService } from 'src/user/user.service';
+
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('plan')
 @Controller('plan')
 export class PlanController {
-  constructor(
-    private readonly planService: PlanService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly planService: PlanService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
