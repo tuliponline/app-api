@@ -8,10 +8,12 @@ import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { Plan, PlanDocument } from './schemas/plas.schema';
 import { InjectModel } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { Model } from 'mongoose';
 import { SuccessResponse } from 'src/responses/success.response';
 import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
 import { Meta } from 'src/responses/base.response';
+import { parseFilters } from '../shared/utils/filter-parser.util';
 
 @Injectable()
 export class PlanService {
@@ -25,12 +27,27 @@ export class PlanService {
     }
   }
 
-  async findAll(page: number, limit: number): Promise<SuccessResponseWithMeta> {
+  async findAll(page: number, limit: number, filters?: string): Promise<SuccessResponseWithMeta> {
+    const filter = filters ? parseFilters(filters) : {};
+
+    Object.entries(filter).forEach(([key, value]) => {
+      switch (key) {
+        case '_id':
+          filter[key] = { $in: value.split('|').map((item: string) => new Types.ObjectId(item)) };
+          break;
+        case 'isRecommended':
+        case 'isActive':
+          filter[key] = value === 'true' ? true : false;
+        default:
+          filter[key] = value;
+      }
+    });
+
     const skip = (page - 1) * limit;
-    const total = await this.planModel.countDocuments();
+    const total = await this.planModel.countDocuments(filter);
     const totalPages = Math.ceil(total / limit);
 
-    const data = await this.planModel.find().skip(skip).limit(limit);
+    const data = await this.planModel.find(filter).skip(skip).limit(limit);
     const meta: Meta = {
       total,
       page,
