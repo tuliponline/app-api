@@ -39,5 +39,5 @@ export class UpdatePlanDto extends PartialType(CreatePlanDto) {
 
   @IsString()
   @ApiProperty()
-  readonly description: string;
+  description: string;
 }
