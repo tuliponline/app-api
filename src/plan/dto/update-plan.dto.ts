@@ -36,4 +36,8 @@ export class UpdatePlanDto extends PartialType(CreatePlanDto) {
   @IsBoolean()
   @ApiProperty()
   isActive: boolean;
+
+  @IsString()
+  @ApiProperty()
+  readonly description: string;
 }

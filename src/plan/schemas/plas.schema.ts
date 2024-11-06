@@ -28,6 +28,8 @@ export class Plan {
   isRecommended: boolean;
   @Prop({ require: true })
   isActive: boolean;
+  @Prop()
+  description: string;
 }
 
 export const PlanSchema = SchemaFactory.createForClass(Plan);

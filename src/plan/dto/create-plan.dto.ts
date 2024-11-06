@@ -37,4 +37,8 @@ export class CreatePlanDto {
   @IsNotEmpty()
   @ApiProperty()
   readonly isActive: boolean;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly description: string;
 }
