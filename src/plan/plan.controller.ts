@@ -33,8 +33,9 @@ export class PlanController {
   async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @Query('filters') filters?: string,
   ): Promise<SuccessResponseWithMeta> {
-    return this.planService.findAll(page, limit);
+    return this.planService.findAll(page, limit,filters);
   }
 
   @Get(':id')
