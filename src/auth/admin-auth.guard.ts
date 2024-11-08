@@ -30,3 +30,29 @@
 //     return true;
 //   }
 // }
+
+import { 
+    Injectable, 
+    CanActivate, 
+    ExecutionContext, 
+    ForbiddenException 
+} from '@nestjs/common';
+import { UserService } from 'src/user/user.service';
+
+@Injectable()
+export class AdminGuard implements CanActivate {
+  constructor(private readonly userService: UserService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    const isAdmin = await this.userService.isAdmin(user.userId);
+    if (!isAdmin) {
+      throw new ForbiddenException("Admin access required");
+    }
+
+    return true;
+  }
+}
+

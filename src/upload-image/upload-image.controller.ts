@@ -15,6 +15,7 @@ import { UploadImageService } from './upload-image.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SuccessResponse } from 'src/responses/success.response';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AdminGuard } from 'src/auth/admin-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('upload-image')
@@ -53,7 +54,7 @@ export class UploadImageController {
     return new SuccessResponse({ imageData });
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @Post('/screenshot')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -78,7 +79,8 @@ export class UploadImageController {
     const fileName = file.originalname;
     console.log(fileName);
     const imageData = await this.uploadImageService.uploadFile(
-      req.user.userId,
+      // req.user.userId,
+      'screenshot',
       fileName,
       buffer,
       true,
