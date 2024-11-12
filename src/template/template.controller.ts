@@ -49,8 +49,12 @@ export class TemplateController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string, @Request() req): Promise<SuccessResponse> {
-    return this.templateService.findOne(req.user.userId, id);
+  findOne(
+    @Param('id') id: string,
+    @Request() req,
+    @Query('filters') filters?: string,
+  ): Promise<SuccessResponse> {
+    return this.templateService.findOne(req.user.userId, id, filters);
   }
 
   @Get('app/:app')
