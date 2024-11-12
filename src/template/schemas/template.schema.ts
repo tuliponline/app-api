@@ -38,8 +38,8 @@ export class Template {
   app: string;
   @Prop({ required: true })
   image: string;
-  @Prop({ required: true })
-  components: [];
+  @Prop({ required: true})
+  components: { [key: string]: any }[];
   @Prop({ required: true })
   pages: [];
   @Prop({ required: true, enum: TemplateStatus, default: TemplateStatus.DRAFT })

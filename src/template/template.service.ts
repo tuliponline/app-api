@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Types } from 'mongoose';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { Template, TemplateDocument } from './schemas/template.schema';
 import { SuccessResponse } from 'src/responses/success.response';
@@ -10,13 +11,15 @@ import { UpdateTemplateDto } from './dto/update-template.dto';
 import stringGenerator from '@nakarmi23/random-string-generator';
 import { UserRole } from 'src/user/schemas/user.schema';
 import { UserService } from 'src/user/user.service';
+import { parseFilters } from '../shared/utils/filter-parser.util';
+import { exit } from 'process';
 
 @Injectable()
 export class TemplateService {
   constructor(
     private readonly userService: UserService,
     @InjectModel(Template.name) private templateModel: Model<TemplateDocument>,
-  ) {}
+  ) { }
   async create(
     createTemplateDto: CreateTemplateDto,
     userId: string,
@@ -71,17 +74,39 @@ export class TemplateService {
     return new SuccessResponseWithMeta(data, 'success', meta);
   }
 
-  async findOne(userId: string, id: string): Promise<SuccessResponse> {
+  async findOne(userId: string, id: string, filters?: string): Promise<SuccessResponse> {
     try {
-      const template = await this.templateModel.findOne({ _id: id, userId });
+      const query: any = { _id: id};
+
+      const filter = filters ? parseFilters(filters) : {};
+      Object.entries(filter).forEach(([key, value]) => {
+        switch (key) {
+          case 'pages':
+            break;
+          default:
+            query[key] = value;
+        }
+      });
+
+      // const template = await this.templateModel.findOne({ _id: id, userId });
+      const template = await this.templateModel.findOne(query);
       if (!template) {
         throw new NotFoundException('Template not found');
       }
+
+      if (filter.pages) {
+        const pagesFilter = Array.isArray(filter.pages) ? filter.pages : filter.pages.split('|');
+        template.components = template.components.filter((component) =>
+          component.pages && component.pages.some((page: string) => pagesFilter.includes(page))
+        );
+      }
+
       return new SuccessResponse(template, 'success');
     } catch (e) {
       throw e; // Re-throw the error for proper handling
     }
   }
+
   async findByApp(app: string): Promise<SuccessResponse> {
     try {
       const template = await this.templateModel.findOne({ app });
