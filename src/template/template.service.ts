@@ -107,12 +107,32 @@ export class TemplateService {
     }
   }
 
-  async findByApp(app: string): Promise<SuccessResponse> {
+  async findByApp(app: string, filters?: string): Promise<SuccessResponse> {
     try {
-      const template = await this.templateModel.findOne({ app });
+      const query: any = { app};
+
+      const filter = filters ? parseFilters(filters) : {};
+      Object.entries(filter).forEach(([key, value]) => {
+        switch (key) {
+          case 'pages':
+            break;
+          default:
+            query[key] = value;
+        }
+      });
+
+      const template = await this.templateModel.findOne(query);
       if (!template) {
         throw new NotFoundException('Template not found');
       }
+
+      if (filter.pages) {
+        const pagesFilter = Array.isArray(filter.pages) ? filter.pages : filter.pages.split('|');
+        template.components = template.components.filter((component) =>
+          component.pages && component.pages.some((page: string) => pagesFilter.includes(page))
+        );
+      }
+
       return new SuccessResponse(template, 'success');
     } catch (e) {
       throw e; // Re-throw the error for proper handling

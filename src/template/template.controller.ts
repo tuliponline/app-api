@@ -21,7 +21,7 @@ import { SuccessResponse } from 'src/responses/success.response';
 @ApiTags('Template')
 @Controller('template')
 export class TemplateController {
-  constructor(private readonly templateService: TemplateService) {}
+  constructor(private readonly templateService: TemplateService) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -58,8 +58,11 @@ export class TemplateController {
   }
 
   @Get('app/:app')
-  findBySlug(@Param('app') app: string): Promise<SuccessResponse> {
-    return this.templateService.findByApp(app);
+  findBySlug(
+    @Param('app') app: string,
+    @Query('filters') filters?: string,
+  ): Promise<SuccessResponse> {
+    return this.templateService.findByApp(app, filters);
   }
 
   @UseGuards(JwtAuthGuard)
