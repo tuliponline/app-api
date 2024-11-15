@@ -14,5 +14,6 @@ import { UserModule } from '../user/user.module';
   ],
   controllers: [TemplateController],
   providers: [TemplateService],
+  exports: [TemplateService],
 })
 export class TemplateModule {}
