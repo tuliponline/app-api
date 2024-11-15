@@ -56,6 +56,7 @@ export class TemplateService {
     };
     return new SuccessResponseWithMeta(data, 'success', meta);
   }
+  
   async findAllAdmin(
     page: number,
     limit: number,
@@ -133,6 +134,18 @@ export class TemplateService {
         );
       }
 
+      return new SuccessResponse(template, 'success');
+    } catch (e) {
+      throw e; // Re-throw the error for proper handling
+    }
+  }
+
+  async findByDomain(domain: string): Promise<SuccessResponse> {
+    try {
+      const template = await this.templateModel.findOne({ domain });
+      if (!template) {
+        throw new NotFoundException('Template not found');
+      }
       return new SuccessResponse(template, 'success');
     } catch (e) {
       throw e; // Re-throw the error for proper handling

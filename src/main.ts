@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { MongooseExceptionFilter } from './shared/filters/exception-error.filter';
 import {
   SwaggerModule,
   DocumentBuilder,
@@ -15,6 +16,9 @@ async function bootstrap() {
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe());
+
+  // ใช้ Filter error ในระดับ Global
+  app.useGlobalFilters(new MongooseExceptionFilter());
 
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,

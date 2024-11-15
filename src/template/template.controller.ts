@@ -65,6 +65,13 @@ export class TemplateController {
     return this.templateService.findByApp(app, filters);
   }
 
+  @Get('domain/:domain')
+  findByDomain(
+    @Param('domain') domain: string,
+  ): Promise<SuccessResponse> {
+    return this.templateService.findByDomain(domain);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
