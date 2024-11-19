@@ -10,10 +10,12 @@ import {
   UserPlanDocument,
 } from 'src/user-plan/schemas/user-plan.schema';
 import { RegisterDto } from './dto/register-dto';
+import { UpdateProfileDto } from './dto/update-profile-dto';
 import { Model } from 'mongoose';
 import { SuccessResponse } from '../responses/success.response';
 import { UserPlanService } from 'src/user-plan/user-plan.service';
 import { UserRole } from 'src/user/schemas/user.schema';
+import { UploadImageService } from 'src/upload-image/upload-image.service';
 
 @Injectable()
 export class UserService {
@@ -22,7 +24,8 @@ export class UserService {
     @InjectModel(UserPlan.name)
     private readonly userPlanModel: Model<UserPlanDocument>,
     private readonly userPlanService: UserPlanService,
-  ) {}
+    private readonly uploadImageService: UploadImageService,
+  ) { }
   async create(registerDto: RegisterDto) {
     const existingUser = await this.userModel
       .findOne({ email: registerDto.email })
@@ -72,5 +75,41 @@ export class UserService {
     };
 
     return new SuccessResponse(response);
+  }
+
+  async update(UpdateProfileDto: UpdateProfileDto, files: any, userId: string) {
+
+    const { avatar, bankBookImage } = files;
+    if (avatar?.length && avatar[0]?.buffer) {
+      const fileName = avatar[0].originalname;
+      UpdateProfileDto.avatar = await this.uploadImageService.uploadFileToS3(
+        `users/${userId}/avatar/avatar-${userId}.${fileName.split('.').pop()}`,
+        avatar.originalname,
+        avatar[0].buffer,
+      );
+    } else {
+      delete UpdateProfileDto.avatar;
+    }
+
+    if (bankBookImage?.length && bankBookImage[0]?.buffer) {
+      const fileName = bankBookImage[0].originalname;
+      UpdateProfileDto.bankBookImage = await this.uploadImageService.uploadFileToS3(
+        `users/${userId}/bankBookImage/bankBookImage-${userId}.${fileName.split('.').pop()}`,
+        bankBookImage.originalname,
+        bankBookImage[0].buffer,
+      );
+    } else {
+      delete UpdateProfileDto.bankBookImage;
+    }
+
+    const result = await this.userModel.findByIdAndUpdate(userId, UpdateProfileDto, {
+      new: true,
+    }).exec();
+
+    if (!result) {
+      throw new NotFoundException('User not found');
+    }
+
+    return new SuccessResponse("updated successfully");
   }
 }

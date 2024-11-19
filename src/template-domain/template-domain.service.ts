@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Types } from 'mongoose';
@@ -16,6 +16,7 @@ import { TemplateDomainConstants } from './constants/conts';
 @Injectable()
 export class TemplateDomainService {
   constructor(
+    @Inject(forwardRef(() => TemplateService))
     private readonly TemplateService: TemplateService,
     @InjectModel(TemplateDomain.name) private TemplateDomain: Model<TemplateDomainDocument>,
   ) { }
@@ -56,7 +57,7 @@ export class TemplateDomainService {
           query[key] = Types.ObjectId.createFromHexString(value)
           break;
         case 'templateId':
-          query[key] = Types.ObjectId.createFromHexString(value)
+          query[key] ={ $in: value.split('|').map((item: string) => Types.ObjectId.createFromHexString(item)) };
           break;
         default:
           query[key] = value;

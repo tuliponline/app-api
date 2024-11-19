@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsMongoId, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsMongoId, IsArray, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { DomainStatus } from '../schemas/template-domain.schema';
 import { Types } from 'mongoose';
@@ -14,4 +14,9 @@ export class CreateTemplateDomainDto {
   @IsNotEmpty()
   @ApiProperty()
   readonly templateApp: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly isEnable: boolean;
 }

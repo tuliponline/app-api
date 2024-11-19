@@ -8,10 +8,12 @@ import {
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { UserPlanModule } from 'src/user-plan/user-plan.module';
+import { UploadImageModule } from 'src/upload-image/upload-image.module';
 
 @Module({
   imports: [
     UserPlanModule,
+    UploadImageModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([
       { name: UserPlan.name, schema: UserPlanSchema },

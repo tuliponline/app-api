@@ -8,7 +8,7 @@ export enum DomainStatus {
   INACTIVE = 'INACTIVE',
 }
 
-@Schema({ timestamps: true , collection: 'template_domain' })
+@Schema({ timestamps: true , collection: 'template_domains' })
 export class TemplateDomain {
   @Prop({ required: true })
   domainName: string;
@@ -24,6 +24,9 @@ export class TemplateDomain {
   
   @Prop({ required: false, type: Types.ObjectId })
   updateBy: Types.ObjectId;
+
+  @Prop({ required: false})
+  isEnable: boolean;
 }
 
 export const TemplateDomainSchema = SchemaFactory.createForClass(TemplateDomain);
