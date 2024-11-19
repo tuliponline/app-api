@@ -41,6 +41,9 @@ export class Order {
 
   @Prop({ required: true, enum: OrderStatus, default: OrderStatus.CREATED })
   status: OrderStatus;
+
+  @Prop()
+  cardtype: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
