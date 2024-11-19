@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Types } from 'mongoose';
@@ -13,12 +13,15 @@ import { UserRole } from 'src/user/schemas/user.schema';
 import { UserService } from 'src/user/user.service';
 import { parseFilters } from '../shared/utils/filter-parser.util';
 import { exit } from 'process';
+import { TemplateDomainService } from 'src/template-domain/template-domain.service';
 
 @Injectable()
 export class TemplateService {
   constructor(
     private readonly userService: UserService,
     @InjectModel(Template.name) private templateModel: Model<TemplateDocument>,
+    @Inject(forwardRef(() => TemplateDomainService))
+    private readonly templateDomainService: TemplateDomainService,
   ) { }
   async create(
     createTemplateDto: CreateTemplateDto,
@@ -47,7 +50,9 @@ export class TemplateService {
     const query = userId ? { userId } : {};
     const total = await this.templateModel.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-    const data = await this.templateModel.find(query).skip(skip).limit(limit);
+    const templates = await this.templateModel.find(query).skip(skip).limit(limit);
+    const data = await this.enrichWithTemplateDomain(templates);
+
     const meta: Meta = {
       total,
       page,
@@ -56,7 +61,7 @@ export class TemplateService {
     };
     return new SuccessResponseWithMeta(data, 'success', meta);
   }
-  
+
   async findAllAdmin(
     page: number,
     limit: number,
@@ -65,7 +70,8 @@ export class TemplateService {
     const query = { createdBy: UserRole.ADMIN };
     const total = await this.templateModel.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-    const data = await this.templateModel.find(query).skip(skip).limit(limit);
+    const templates = await this.templateModel.find(query).skip(skip).limit(limit);
+    const data = await this.enrichWithTemplateDomain(templates);
     const meta: Meta = {
       total,
       page,
@@ -77,7 +83,7 @@ export class TemplateService {
 
   async findOne(userId: string, id: string, filters?: string): Promise<SuccessResponse> {
     try {
-      const query: any = { _id: id};
+      const query: any = { _id: id };
 
       const filter = filters ? parseFilters(filters) : {};
       Object.entries(filter).forEach(([key, value]) => {
@@ -102,7 +108,9 @@ export class TemplateService {
         );
       }
 
-      return new SuccessResponse(template, 'success');
+      const enrichedData = await this.enrichWithTemplateDomain([template]);
+
+      return new SuccessResponse(enrichedData[0], 'success');
     } catch (e) {
       throw e; // Re-throw the error for proper handling
     }
@@ -110,7 +118,7 @@ export class TemplateService {
 
   async findByApp(app: string, filters?: string): Promise<SuccessResponse> {
     try {
-      const query: any = { app};
+      const query: any = { app };
 
       const filter = filters ? parseFilters(filters) : {};
       Object.entries(filter).forEach(([key, value]) => {
@@ -134,7 +142,9 @@ export class TemplateService {
         );
       }
 
-      return new SuccessResponse(template, 'success');
+      const enrichedData = await this.enrichWithTemplateDomain([template]);
+
+      return new SuccessResponse(enrichedData[0], 'success');
     } catch (e) {
       throw e; // Re-throw the error for proper handling
     }
@@ -146,7 +156,10 @@ export class TemplateService {
       if (!template) {
         throw new NotFoundException('Template not found');
       }
-      return new SuccessResponse(template, 'success');
+
+      const enrichedData = await this.enrichWithTemplateDomain([template]);
+
+      return new SuccessResponse(enrichedData[0], 'success');
     } catch (e) {
       throw e; // Re-throw the error for proper handling
     }
@@ -185,5 +198,26 @@ export class TemplateService {
     } catch (e) {
       throw e; // Re-throw the error for proper handling
     }
+  }
+
+  async enrichWithTemplateDomain(
+    templates: any[],
+  ): Promise<any[]> {
+    const templateIds = templates.map((template) => template._id.toString());
+    const filters = `templateId:${templateIds.join('|')}`;
+  
+    const templateDomainsResponse = await this.templateDomainService.findWithPagination(1, 999, filters);
+  
+    const domainMap = new Map(
+      templateDomainsResponse.data.map((domain) => [
+        domain.templateId.toString(),
+        domain,
+      ])
+    );
+  
+    return templates.map((template) => ({
+      ...template.toObject(),
+      templateDomain: domainMap.get(template._id.toString()) || null,
+    }));
   }
 }

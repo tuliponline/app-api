@@ -244,4 +244,34 @@ export class UploadImageService {
     const totalSize = images.reduce((sum, image) => sum + image.size, 0);
     return totalSize;
   }
+
+  async uploadFileToS3(localtion: string, fileName: string, buffer: Buffer) {
+    const params = {
+      Bucket: 'we11-storage',
+      Key: localtion,
+      Body: buffer,
+      ACL: 'public-read',
+    };
+
+    console.log(params);
+
+    try {
+      const { Location } = await this.s3.upload(params).promise();
+      return Location; // URL ของไฟล์ที่อัปโหลดสำเร็จ
+    } catch (error) {
+      console.error('Upload Error:', error.message);
+      throw new BadRequestException('Failed to upload image');
+    }
+  }
+
+  async deleteFileFromS3(key: string) {
+    await this.s3
+      .deleteObject({
+        Bucket: 'we11-storage',
+        Key: key,
+      })
+      .promise();
+
+    return new SuccessResponse('Image deleted successfully');
+  }
 }
