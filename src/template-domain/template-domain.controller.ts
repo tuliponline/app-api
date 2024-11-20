@@ -29,7 +29,6 @@ export class TemplateDomainController {
     return this.templateDomainService.create(createTemplateDomainDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findWithPagination(
     @Query('page') page: number = 1,
@@ -39,7 +38,6 @@ export class TemplateDomainController {
     return this.templateDomainService.findWithPagination(page, limit, filters);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(
     @Param('id') id: string,

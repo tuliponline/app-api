@@ -253,8 +253,6 @@ export class UploadImageService {
       ACL: 'public-read',
     };
 
-    console.log(params);
-
     try {
       const { Location } = await this.s3.upload(params).promise();
       return Location; // URL ของไฟล์ที่อัปโหลดสำเร็จ
