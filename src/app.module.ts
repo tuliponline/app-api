@@ -11,6 +11,7 @@ import { UserPlanModule } from './user-plan/user-plan.module';
 import { OrdersModule } from './orders/orders.module';
 import { UploadImageModule } from './upload-image/upload-image.module';
 import { TemplateDomainModule } from './template-domain/template-domain.module';
+import { BanksModule } from './banks/banks.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { TemplateDomainModule } from './template-domain/template-domain.module';
     OrdersModule,
     UploadImageModule,
     TemplateDomainModule,
+    BanksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

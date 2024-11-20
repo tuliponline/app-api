@@ -27,14 +27,15 @@ export class TemplateDomainService {
     if (!templateData) {
       throw new NotFoundException(TemplateDomainConstants.NOT_FOUND);
     }
-
+    
     try {
       const newTemplateDomain = new this.TemplateDomain({
         ...CreateTemplateDomainDto,
-        templateId: Types.ObjectId.createFromHexString(templateData.data.id),
+        templateId: templateData.data._id,
         Status: DomainStatus.PENDING
       });
       await newTemplateDomain.save();
+
       return new SuccessResponse(null, TemplateDomainConstants.CREATE_SUCCESS);
     } catch (e) {
       throw e;
@@ -57,7 +58,7 @@ export class TemplateDomainService {
           query[key] = Types.ObjectId.createFromHexString(value)
           break;
         case 'templateId':
-          query[key] ={ $in: value.split('|').map((item: string) => Types.ObjectId.createFromHexString(item)) };
+          query[key] = { $in: value.split('|').map((item: string) => Types.ObjectId.createFromHexString(item)) };
           break;
         default:
           query[key] = value;
