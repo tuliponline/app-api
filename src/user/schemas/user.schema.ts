@@ -35,7 +35,7 @@ export class User {
   @Prop()
   birthDate: Date;
 
-  @Prop()
+  @Prop({ type: Types.ObjectId, ref: 'Bank' })
   bankId: Types.ObjectId;
 
   @Prop()

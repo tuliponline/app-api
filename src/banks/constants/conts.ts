@@ -1,4 +1,4 @@
 export const BankConstants = {
-    NOT_FOUND: 'Bank Domain not found',
-    CREATE_SUCCESS: 'Bank Domain created successfully',
+    NOT_FOUND: 'Bank not found',
+    CREATE_SUCCESS: 'Bank created successfully',
   };

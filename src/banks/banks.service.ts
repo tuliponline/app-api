@@ -3,7 +3,7 @@ import { CreateBankDto } from './dto/create-bank.dto';
 import { UpdateBankDto } from './dto/update-bank.dto';
 import { UploadImageService } from 'src/upload-image/upload-image.service';
 import { InjectModel } from '@nestjs/mongoose';
-import { Bank, BankDocument } from './schemas/bank.schema';
+import { Bank, BankDocument } from './schemas/banks.schema';
 import { Model, Types } from 'mongoose';
 import { SuccessResponse } from 'src/responses/success.response';
 import { parseFilters } from 'src/shared/utils/filter-parser.util';
