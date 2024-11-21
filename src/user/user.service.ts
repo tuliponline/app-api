@@ -11,11 +11,12 @@ import {
 } from 'src/user-plan/schemas/user-plan.schema';
 import { RegisterDto } from './dto/register-dto';
 import { UpdateProfileDto } from './dto/update-profile-dto';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { SuccessResponse } from '../responses/success.response';
 import { UserPlanService } from 'src/user-plan/user-plan.service';
 import { UserRole } from 'src/user/schemas/user.schema';
 import { UploadImageService } from 'src/upload-image/upload-image.service';
+import { BanksService } from 'src/banks/banks.service';
 
 @Injectable()
 export class UserService {
@@ -25,6 +26,7 @@ export class UserService {
     private readonly userPlanModel: Model<UserPlanDocument>,
     private readonly userPlanService: UserPlanService,
     private readonly uploadImageService: UploadImageService,
+    private readonly bankService: BanksService,
   ) { }
   async create(registerDto: RegisterDto) {
     const existingUser = await this.userModel
@@ -58,23 +60,29 @@ export class UserService {
   }
 
   async findByEmailWithOutPassword(email: string): Promise<SuccessResponse> {
-    const result = await this.userModel
-      .findOne({ email })
-      .select('-password')
-      .select('__v')
-      .exec();
-    if (!result) {
-      throw new NotFoundException('email not found');
-    }
-    const userPlans = await this.userPlanService.findByUserId(
-      result._id.toString(),
-    );
-    const response = {
-      ...result.toObject(), // Convert Mongoose document to plain object
-      userPlans: userPlans,
-    };
+    try {
+      const result = await this.userModel
+        .findOne({ email })
+        .select('-password')
+        .select('__v')
+        .populate('bankId')
+        .exec();
+      if (!result) {
+        throw new NotFoundException('email not found');
+      }
+      const userPlans = await this.userPlanService.findByUserId(
+        result._id.toString(),
+      );
+      const response = {
+        ...result.toObject(), // Convert Mongoose document to plain object
+        userPlans: userPlans,
+      };
 
-    return new SuccessResponse(response);
+      return new SuccessResponse(response);
+    } catch (e) {
+      console.log(e)
+      throw e;
+    }
   }
 
   async update(UpdateProfileDto: UpdateProfileDto, files: any, userId: string) {
@@ -100,6 +108,15 @@ export class UserService {
       );
     } else {
       delete UpdateProfileDto.bankBookImage;
+    }
+
+    const bank = await this.bankService.findOne(UpdateProfileDto.bankId.toString());
+    if (!bank) {
+      throw new NotFoundException('Bank not found');
+    }
+
+    if (UpdateProfileDto.bankId) {
+      UpdateProfileDto.bankId = Types.ObjectId.createFromHexString(UpdateProfileDto.bankId.toString());
     }
 
     const result = await this.userModel.findByIdAndUpdate(userId, UpdateProfileDto, {

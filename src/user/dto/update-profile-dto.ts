@@ -34,9 +34,9 @@ export class UpdateProfileDto {
   @ApiProperty({ example: '2000-12-30' })
   readonly birthDate: Date;
 
-  @IsMongoId()
+  @IsString()
   @ApiProperty()
-  readonly BankId: Types.ObjectId;
+  bankId: Types.ObjectId;
 
   @IsString()
   @ApiProperty()

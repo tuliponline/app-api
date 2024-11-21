@@ -1,7 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateBankDto } from './create-bank.dto';
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { BankStatus } from '../schemas/bank.schema';
+import { BankStatus } from '../schemas/banks.schema';
 
 export class UpdateBankDto extends PartialType(CreateBankDto) {
     @IsString()

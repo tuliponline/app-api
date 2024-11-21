@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { BankStatus } from "../schemas/bank.schema";
+import { BankStatus } from "../schemas/banks.schema";
 
 export class CreateBankDto {
     @IsNotEmpty()
