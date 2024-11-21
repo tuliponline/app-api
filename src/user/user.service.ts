@@ -76,6 +76,8 @@ export class UserService {
       const response = {
         ...result.toObject(), // Convert Mongoose document to plain object
         userPlans: userPlans,
+        bank: result.bankId,
+        bankId: undefined,
       };
 
       return new SuccessResponse(response);
