@@ -78,7 +78,7 @@ export class UserService {
       );
 
       let plan = null;
-      if (userPlans.planId) {
+      if (userPlans?.planId) {
         plan = await this.planService.findOne(userPlans.planId.toString());
       }
 
