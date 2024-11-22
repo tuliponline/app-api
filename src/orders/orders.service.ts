@@ -46,10 +46,10 @@ export class OrdersService {
       throw new NotFoundException('planId not found');
     }
 
-    const hasPlan = await this.userPlanService.checkHasPlan(userId);
-    if (hasPlan) {
-      throw new ConflictException('User already has a plan');
-    }
+    // const hasPlan = await this.userPlanService.checkHasPlan(userId);
+    // if (hasPlan) {
+    //   throw new ConflictException('User already has a plan');
+    // }
 
     const finalPrict = plan.data.price - plan.data.discount;
     const vat = Math.round(finalPrict * 0.07);
