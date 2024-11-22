@@ -40,4 +40,6 @@ export class CreateUserPlanDto {
   @IsNotEmpty()
   @IsString()
   endDate: Date;
+  @IsString()
+  refNo: string;
 }

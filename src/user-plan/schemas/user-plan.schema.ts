@@ -36,6 +36,10 @@ export class UserPlan {
   hasExpired: boolean;
   @Prop()
   diskUsed: number;
+  @Prop({Types: Types.ObjectId, ref: 'Plan'})
+  planId: Types.ObjectId;
+  @Prop()
+  refNo: string;
 }
 
 export const UserPlanSchema = SchemaFactory.createForClass(UserPlan);

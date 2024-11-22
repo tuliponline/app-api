@@ -7,7 +7,7 @@ import {
 // import { UpdateUserPlanDto } from './dto/update-user-plan.dto';
 import { UserPlan, UserPlanDocument } from './schemas/user-plan.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model , Types} from 'mongoose';
 import { PlanService } from 'src/plan/plan.service';
 import { UploadImageService } from 'src/upload-image/upload-image.service';
 
@@ -22,6 +22,7 @@ export class UserPlanService {
     userId: string,
     planId: string,
     orderNo: string,
+    refNo?: string
   ): Promise<UserPlan> {
     const plan = await this.planService.findOne(planId);
     if (!plan) {
@@ -32,6 +33,7 @@ export class UserPlanService {
     const total = finalPrict + vat;
     const existingPlan = await this.userPlanModel.findOne({ userId });
     if (existingPlan) {
+      existingPlan.planId = Types.ObjectId.createFromHexString(planId);
       existingPlan.orderNo = orderNo;
       existingPlan.name = plan.data.name;
       existingPlan.price = plan.data.price;
@@ -46,6 +48,7 @@ export class UserPlanService {
       const endDate = new Date();
       endDate.setDate(endDate.getDate() + 360);
       existingPlan.endDate = endDate;
+      existingPlan.refNo = refNo;
 
       try {
         return await existingPlan.save();
@@ -58,6 +61,7 @@ export class UserPlanService {
       endDate.setDate(endDate.getDate() + 360);
       const newUserPlan = new this.userPlanModel({
         userId,
+        planId: Types.ObjectId.createFromHexString(planId),
         orderNo,
         name: plan.data.name,
         price: plan.data.price,
@@ -70,6 +74,7 @@ export class UserPlanService {
         duration: plan.data.duration,
         startDate: new Date(),
         endDate,
+        refNo,
       });
 
       try {
@@ -111,19 +116,10 @@ export class UserPlanService {
 
     const diskUsed = await this.uploadImageService.sumImageSizes(userId);
 
-    if (currentDate >= endDate) {
-      return {
-        ...userPlan.toObject(),
-        hasExpired: true,
-        diskUsed,
-      };
-    } else {
-      // Current time is before end date
-      return {
-        ...userPlan.toObject(),
-        hasExpired: false,
-        diskUsed,
-      };
-    }
+    return {
+      ...userPlan.toObject(),
+      hasExpired: currentDate >= endDate,
+      diskUsed,
+    };
   }
 }

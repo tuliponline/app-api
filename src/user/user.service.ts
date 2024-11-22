@@ -17,6 +17,7 @@ import { UserPlanService } from 'src/user-plan/user-plan.service';
 import { UserRole } from 'src/user/schemas/user.schema';
 import { UploadImageService } from 'src/upload-image/upload-image.service';
 import { BanksService } from 'src/banks/banks.service';
+import { PlanService } from 'src/plan/plan.service';
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,7 @@ export class UserService {
     private readonly userPlanService: UserPlanService,
     private readonly uploadImageService: UploadImageService,
     private readonly bankService: BanksService,
+    private readonly planService: PlanService
   ) { }
   async create(registerDto: RegisterDto) {
     const existingUser = await this.userModel
@@ -70,14 +72,23 @@ export class UserService {
       if (!result) {
         throw new NotFoundException('email not found');
       }
+
       const userPlans = await this.userPlanService.findByUserId(
         result._id.toString(),
       );
+
+      let plan = null;
+      if (userPlans.planId) {
+        plan = await this.planService.findOne(userPlans.planId.toString());
+      }
+
       const response = {
         ...result.toObject(), // Convert Mongoose document to plain object
         userPlans: userPlans,
+        avatar: result.avatar,
         bank: result.bankId,
         bankId: undefined,
+        plan: plan?.data
       };
 
       return new SuccessResponse(response);
