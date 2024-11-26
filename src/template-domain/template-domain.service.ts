@@ -6,12 +6,15 @@ import { CreateTemplateDomainDto } from './dto/create-template-domain.dto';
 import { DomainStatus, TemplateDomain, TemplateDomainDocument } from './schemas/template-domain.schema';
 import { SuccessResponse } from 'src/responses/success.response';
 import { SuccessResponseWithMeta } from 'src/responses/success.response.withmeta';
+import { ResponseTemplateDomainDto } from './dto/response-template-domain.dto';
 import { Meta } from 'src/responses/base.response';
 import { UpdateTemplateDomainDto } from './dto/update-template-domain.dto';
 import { TemplateService } from 'src/template/template.service';
 import { parseFilters } from '../shared/utils/filter-parser.util';
 import { exit } from 'process';
 import { TemplateDomainConstants } from './constants/conts';
+import { response } from 'express';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TemplateDomainService {
@@ -71,14 +74,16 @@ export class TemplateDomainService {
     const skip = (page - 1) * limit;
     const total = await this.TemplateDomain.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-    const data = await this.TemplateDomain.find(query).skip(skip).limit(limit);
+    const data = await this.TemplateDomain.find(query).populate('templateId').skip(skip).limit(limit).exec();
+    const response = plainToInstance(ResponseTemplateDomainDto, data, { excludeExtraneousValues: true });
+    
     const meta: Meta = {
       total,
       page,
       limit,
       totalPages,
     };
-    return new SuccessResponseWithMeta(data, 'success', meta);
+    return new SuccessResponseWithMeta(response, 'success', meta);
   }
 
   async findOne(id: string): Promise<SuccessResponse> {
