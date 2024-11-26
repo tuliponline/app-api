@@ -66,19 +66,23 @@ export class TemplateService {
     page: number,
     limit: number,
   ): Promise<SuccessResponseWithMeta> {
-    const skip = (page - 1) * limit;
-    const query = { createdBy: UserRole.ADMIN };
-    const total = await this.templateModel.countDocuments(query);
-    const totalPages = Math.ceil(total / limit);
-    const templates = await this.templateModel.find(query).skip(skip).limit(limit);
-    const data = await this.enrichWithTemplateDomain(templates);
-    const meta: Meta = {
-      total,
-      page,
-      limit,
-      totalPages,
-    };
-    return new SuccessResponseWithMeta(data, 'success', meta);
+    try {
+      const skip = (page - 1) * limit;
+      const query = { createdBy: UserRole.ADMIN };
+      const total = await this.templateModel.countDocuments(query);
+      const totalPages = Math.ceil(total / limit);
+      const templates = await this.templateModel.find(query).skip(skip).limit(limit);
+      const data = await this.enrichWithTemplateDomain(templates);
+      const meta: Meta = {
+        total,
+        page,
+        limit,
+        totalPages,
+      };
+      return new SuccessResponseWithMeta(data, 'success', meta);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async findOne(userId: string, id: string, filters?: string): Promise<SuccessResponse> {
@@ -200,24 +204,32 @@ export class TemplateService {
     }
   }
 
-  async enrichWithTemplateDomain(
-    templates: any[],
-  ): Promise<any[]> {
-    const templateIds = templates.map((template) => template._id.toString());
+  async enrichWithTemplateDomain(templates: any[]): Promise<any[]> {
+    const templateIds = templates
+      .map((template) => template?._id?.toString()) // Safely access `_id` and convert to string
+      .filter((id) => id); // Remove undefined or null values
+
     const filters = `templateId:${templateIds.join('|')}`;
-  
+
     const templateDomainsResponse = await this.templateDomainService.findWithPagination(1, 999, filters);
-  
-    const domainMap = new Map(
-      templateDomainsResponse.data.map((domain) => [
-        domain.templateId.toString(),
+
+    const domainMap = new Map<string, any>(
+      templateDomainsResponse.data.map((domain: any) => [
+        domain.template._id.toString(),
         domain,
       ])
     );
-  
+
+    domainMap.forEach((value, key) => {
+      if (value.template) {
+        value.templateId = value.template.templateId; // Assign `templateId`
+        delete value.template; // Remove `template`
+      }
+    });
+
     return templates.map((template) => ({
-      ...template.toObject(),
-      templateDomain: domainMap.get(template._id.toString()) || null,
+      ...template.toObject ? template.toObject() : template, // Handle plain objects or Mongoose documents
+      templateDomain: template?._id ? domainMap.get(template._id.toString()) : null,
     }));
   }
-}
+}  

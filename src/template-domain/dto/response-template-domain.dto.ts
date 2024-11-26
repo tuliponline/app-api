@@ -5,6 +5,9 @@ import { Transform , Expose} from 'class-transformer';
 
 export class ResponseTemplateDomainDto {
   @Expose()
+  _id: Types.ObjectId;
+
+  @Expose()
   domainName: string;
 
   @Expose()
