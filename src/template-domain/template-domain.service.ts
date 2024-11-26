@@ -74,7 +74,8 @@ export class TemplateDomainService {
     const skip = (page - 1) * limit;
     const total = await this.TemplateDomain.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-    const data = await this.TemplateDomain.find(query).populate('templateId').skip(skip).limit(limit).exec();
+    const data = await this.TemplateDomain.find(query).populate('templateId', 'pageFor pageType templateId userId name app image pages status createdBy createdAt updatedAt').skip(skip).limit(limit);
+    console.log(data);
     const response = plainToInstance(ResponseTemplateDomainDto, data, { excludeExtraneousValues: true });
     
     const meta: Meta = {
