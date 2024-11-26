@@ -5,8 +5,9 @@ import { Transform , Expose} from 'class-transformer';
 
 export class ResponseTemplateDomainDto {
   @Expose()
-  _id: Types.ObjectId;
-
+  @Transform(({ value }) => value.toString(), { toClassOnly: true })
+  _id: string;
+  
   @Expose()
   domainName: string;
 

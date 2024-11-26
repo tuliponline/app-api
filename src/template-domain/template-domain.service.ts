@@ -30,7 +30,7 @@ export class TemplateDomainService {
     if (!templateData) {
       throw new NotFoundException(TemplateDomainConstants.NOT_FOUND);
     }
-    
+
     try {
       const newTemplateDomain = new this.TemplateDomain({
         ...CreateTemplateDomainDto,
@@ -74,10 +74,14 @@ export class TemplateDomainService {
     const skip = (page - 1) * limit;
     const total = await this.TemplateDomain.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-    const data = await this.TemplateDomain.find(query).populate('templateId', 'pageFor pageType templateId userId name app image pages status createdBy createdAt updatedAt').skip(skip).limit(limit);
-    console.log(data);
-    const response = plainToInstance(ResponseTemplateDomainDto, data, { excludeExtraneousValues: true });
-    
+    const data = await this.TemplateDomain.find(query).populate('templateId', 'pageFor pageType templateId userId name app image pages status createdBy createdAt updatedAt')
+      .skip(skip)
+      .limit(limit);
+    const response = plainToInstance(ResponseTemplateDomainDto, data, { 
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
+
     const meta: Meta = {
       total,
       page,
@@ -106,6 +110,7 @@ export class TemplateDomainService {
     UpdateTemplateDomainDto: UpdateTemplateDomainDto,
   ): Promise<SuccessResponse> {
     try {
+      console.log(id)
       const templateDomain = await this.TemplateDomain.findOneAndUpdate(
         { _id: id },
         {
