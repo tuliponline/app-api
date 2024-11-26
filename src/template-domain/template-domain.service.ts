@@ -60,6 +60,9 @@ export class TemplateDomainService {
         case 'templateId':
           query[key] = { $in: value.split('|').map((item: string) => Types.ObjectId.createFromHexString(item)) };
           break;
+        case 'search':
+          query['domainName'] = { $regex: value, $options: 'i' };
+          break;
         default:
           query[key] = value;
       }
