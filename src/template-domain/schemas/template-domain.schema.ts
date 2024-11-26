@@ -19,7 +19,7 @@ export class TemplateDomain {
   @Prop({ required: true, unique: true })
   templateApp: string;
 
-  @Prop({ required: true, type: Types.ObjectId })
+  @Prop({ required: true, type: Types.ObjectId, ref: 'Template' })
   templateId: Types.ObjectId;
   
   @Prop({ required: false, type: Types.ObjectId })
