@@ -63,8 +63,10 @@ export class TemplateDomainService {
         case 'templateId':
           query[key] = { $in: value.split('|').map((item: string) => Types.ObjectId.createFromHexString(item)) };
           break;
-        case 'search':
-          query['domainName'] = { $regex: value, $options: 'i' };
+        case 'domainName':
+          const normalizedValue = value.replace(/^www\./i, ''); // ลบ "www." ถ้ามี
+          const regexPattern = `^(www\\.)?${normalizedValue}$`; // ค้นหาแบบมีหรือไม่มี "www."
+          query[key] = { $regex: regexPattern, $options: 'i' };
           break;
         default:
           query[key] = value;
@@ -77,7 +79,7 @@ export class TemplateDomainService {
     const data = await this.TemplateDomain.find(query).populate('templateId', 'pageFor pageType templateId userId name app image pages status createdBy createdAt updatedAt')
       .skip(skip)
       .limit(limit);
-    const response = plainToInstance(ResponseTemplateDomainDto, data, { 
+    const response = plainToInstance(ResponseTemplateDomainDto, data, {
       excludeExtraneousValues: true,
       enableImplicitConversion: true,
     });
