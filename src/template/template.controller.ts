@@ -62,6 +62,7 @@ export class TemplateController {
     @Param('app') app: string,
     @Query('filters') filters?: string,
   ): Promise<SuccessResponse> {
+    console.log(`gatByApp ${app} :`,new Date())
     return this.templateService.findByApp(app, filters);
   }
 

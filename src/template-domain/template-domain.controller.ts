@@ -35,6 +35,7 @@ export class TemplateDomainController {
     @Query('limit') limit: number = 10,
     @Query('filters') filters?: string,
   ): Promise<SuccessResponseWithMeta> {
+    console.log('getTemplateDomainMember :', new Date());
     return this.templateDomainService.findWithPagination(page, limit, filters);
   }
 
