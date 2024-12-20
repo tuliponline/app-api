@@ -68,7 +68,7 @@ export class TemplateService {
   ): Promise<SuccessResponseWithMeta> {
     try {
       const skip = (page - 1) * limit;
-      const query = { createdBy: UserRole.ADMIN };
+      const query = { createdBy: UserRole.ADMIN, email: "admin@gmail.com" };
       const total = await this.templateModel.countDocuments(query);
       const totalPages = Math.ceil(total / limit);
       const templates = await this.templateModel.find(query).skip(skip).limit(limit);
